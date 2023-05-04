@@ -6,19 +6,19 @@
 #define BLYNK_PRINT Serial
 
 // COPIAR DIRETAMENTE DO BLYNK.IO
-#define BLYNK_TEMPLATE_ID "TMPLE2olxXrP"
-#define BLYNK_TEMPLATE_NAME "Horta"
-#define BLYNK_AUTH_TOKEN "92JKMuQ_mHNI-ynRtGK-ZdS0PDN8ijpl"
+#define BLYNK_TEMPLATE_ID "TMPL9kRab5ds"
+#define BLYNK_TEMPLATE_NAME "Quickstart Template"
+#define BLYNK_AUTH_TOKEN "xHeEO6L3sxGNqTWFg73RUPzyghlATzF4"
 
 //CREDENCIAIS DE ACESSO À WIFI
-#define WFC_SSID "BOILES"
-#define WFC_PASS "e1cc72048901@"
+#define WFC_SSID "IFPI"
+#define WFC_PASS ""
 
 #define LIGADA 1
 #define DESLIGADA 0
-#define PIN_BOMBA 22
-#define V_PIN V1
-#define LIM_BOMBA 60000
+#define PIN_LUZ1 22
+#define V_PIN V0
+#define LIM_LUZ1 60000
 
 char auth[] = BLYNK_AUTH_TOKEN;
 
@@ -27,39 +27,38 @@ char auth[] = BLYNK_AUTH_TOKEN;
 char ssid[] = WFC_SSID;
 char pass[] = WFC_PASS;
 
-bool bomba_bt = false;
-int  bomba_tempo; 
+bool luz1_bt = false;
 
 unsigned long tempo_exec;
 
 BLYNK_WRITE(V_PIN) {
-  bomba_bt = param.asInt();
+  luz1_bt = param.asInt();
 }
 
-void DesligarBomba(void){
-  digitalWrite(PIN_BOMBA, LOW);
+void DesligarRele(int DEV){
   Blynk.virtualWrite(V_PIN, DESLIGADA);
+  digitalWrite(DEV, LOW);
 }
 
-void LigarBomba(void){
-  digitalWrite(PIN_BOMBA, HIGH);
+void LigarRele(int DEV){
   Blynk.virtualWrite(V_PIN, LIGADA);
+  digitalWrite(DEV, HIGH);
 }
 
 
 void SyncAct(void){
-  if(bomba_bt == LIGADA && Blynk.connected() == 1){
-    if((tempo_exec + LIM_BOMBA) <= millis()){
-      DesligarBomba();
+  if(luz1_bt == LIGADA && Blynk.connected() == 1){
+    if((tempo_exec + LIM_LUZ1) <= millis()){
+      DesligarRele(PIN_LUZ1);
       Blynk.syncVirtual(V_PIN);
     }
-  }else if(digitalRead(PIN_BOMBA) == 1){
-    if((tempo_exec + LIM_BOMBA) <= millis()){
-      digitalWrite(PIN_BOMBA, HIGH);
-      bomba_bt = DESLIGADA;
+  }else if(digitalRead(PIN_LUZ1) == 1){
+    if((tempo_exec + LIM_LUZ1) <= millis()){
+      digitalWrite(PIN_LUZ1, HIGH);
+      luz1_bt = DESLIGADA;
     }
   }
-  if((tempo_exec) < millis() && bomba_bt == DESLIGADA) tempo_exec = millis();
+  if((tempo_exec) < millis() && luz1_bt == DESLIGADA) tempo_exec = millis();
 }
 
 void setup() {
@@ -67,9 +66,9 @@ void setup() {
   Serial.begin(9600);
 
   Blynk.begin(auth, ssid, pass);
-  pinMode(PIN_BOMBA, OUTPUT);
+  pinMode(PIN_LUZ1, OUTPUT);
 
-  digitalWrite(PIN_BOMBA, LOW);
+  digitalWrite(PIN_LUZ1, LOW);
   Blynk.syncVirtual(V_PIN);
   delayMicroseconds(1500);
   tempo_exec = 0;
@@ -78,23 +77,19 @@ void setup() {
 void loop() {
   Blynk.run();
 
-  if (bomba_bt == LIGADA) {
-    LigarBomba();
-  }else if(bomba_bt == DESLIGADA) {
-    DesligarBomba();
+  if (luz1_bt == LIGADA) {
+    LigarRele(PIN_LUZ1);
+  }else if(luz1_bt == DESLIGADA) {
+    DesligarRele(PIN_LUZ1);
   }
-  SyncAct();
-  Serial.print(bomba_bt);
+
+  Serial.print(luz1_bt);
   Serial.print('\t');
-  Serial.print(digitalRead(PIN_BOMBA));
+  Serial.print(digitalRead(PIN_LUZ1));
   Serial.print('\t');
   Serial.print(Blynk.connected());
   Serial.print('\t');
-  Serial.print(millis());
-  Serial.print('\t');
-  Serial.print(tempo_exec + LIM_BOMBA);
-  Serial.print('\t');
-  Serial.println(tempo_exec + LIM_BOMBA - millis());
+  Serial.println(millis());
 }
 
 
