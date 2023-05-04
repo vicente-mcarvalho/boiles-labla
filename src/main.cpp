@@ -5,14 +5,8 @@
 
 #define BLYNK_PRINT Serial
 
-// COPIAR DIRETAMENTE DO BLYNK.IO
-#define BLYNK_TEMPLATE_ID "TMPL9kRab5ds"
-#define BLYNK_TEMPLATE_NAME "Quickstart Template"
-#define BLYNK_AUTH_TOKEN "xHeEO6L3sxGNqTWFg73RUPzyghlATzF4"
-
-//CREDENCIAIS DE ACESSO À WIFI
-#define WFC_SSID "IFPI"
-#define WFC_PASS ""
+#include <BlynkCred.h>
+#include <WifiCred.h>
 
 #define LIGADA 1
 #define DESLIGADA 0
