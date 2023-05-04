@@ -8,8 +8,8 @@
 #include <BlynkCred.h>
 #include <WifiCred.h>
 
-#define LIGADA 1
-#define DESLIGADA 0
+#define LIGADA 0
+#define DESLIGADA 1
 #define PIN_LUZ1 22
 #define V_PIN V0
 #define LIM_LUZ1 60000
