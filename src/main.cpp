@@ -8,11 +8,11 @@
 #include <BlynkCred.h>
 #include <WifiCred.h>
 
-#define LIGADA 0
-#define DESLIGADA 1
+#define LIGADA 1
+#define DESLIGADA 0
 #define PIN_LUZ1 22
 #define V_PIN V0
-#define LIM_LUZ1 60000
+#define LIM_LUZ1 6000
 
 char auth[] = BLYNK_AUTH_TOKEN;
 
@@ -30,17 +30,19 @@ BLYNK_WRITE(V_PIN) {
 }
 
 void DesligarRele(int DEV){
-  Blynk.virtualWrite(V_PIN, DESLIGADA);
   digitalWrite(DEV, LOW);
+  if(digitalRead(PIN_LUZ1) != luz1_bt){
+    Blynk.virtualWrite(V_PIN, DESLIGADA);
+  }
 }
 
 void LigarRele(int DEV){
-  Blynk.virtualWrite(V_PIN, LIGADA);
   digitalWrite(DEV, HIGH);
+  // Blynk.virtualWrite(V_PIN, LIGADA);
 }
 
 
-void SyncAct(void){
+void SyncAct(int lim){
   if(luz1_bt == LIGADA && Blynk.connected() == 1){
     if((tempo_exec + LIM_LUZ1) <= millis()){
       DesligarRele(PIN_LUZ1);
@@ -52,7 +54,7 @@ void SyncAct(void){
       luz1_bt = DESLIGADA;
     }
   }
-  if((tempo_exec) < millis() && luz1_bt == DESLIGADA) tempo_exec = millis();
+  if((tempo_exec) < millis()+lim && luz1_bt == DESLIGADA) tempo_exec = millis();
 }
 
 void setup() {
@@ -70,20 +72,22 @@ void setup() {
 
 void loop() {
   Blynk.run();
-
+  
   if (luz1_bt == LIGADA) {
     LigarRele(PIN_LUZ1);
   }else if(luz1_bt == DESLIGADA) {
     DesligarRele(PIN_LUZ1);
   }
-
+  SyncAct(68);
   Serial.print(luz1_bt);
   Serial.print('\t');
   Serial.print(digitalRead(PIN_LUZ1));
   Serial.print('\t');
   Serial.print(Blynk.connected());
   Serial.print('\t');
-  Serial.println(millis());
+  Serial.print(millis());
+  Serial.print('\t');
+  Serial.println(tempo_exec + LIM_LUZ1 - millis());
 }
 
 

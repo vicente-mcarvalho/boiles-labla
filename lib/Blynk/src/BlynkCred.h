@@ -1,4 +1,4 @@
 // COPIAR DIRETAMENTE DO BLYNK.IO
-#define BLYNK_TEMPLATE_ID "??"
-#define BLYNK_TEMPLATE_NAME "??"
-#define BLYNK_AUTH_TOKEN "??"
+#define BLYNK_TEMPLATE_ID "TMPL9kRab5ds"
+#define BLYNK_TEMPLATE_NAME "Quickstart Template"
+#define BLYNK_AUTH_TOKEN "xHeEO6L3sxGNqTWFg73RUPzyghlATzF4"
