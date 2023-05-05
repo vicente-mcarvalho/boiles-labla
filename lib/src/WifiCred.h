@@ -1,0 +1,3 @@
+//CREDENCIAIS DE ACESSO À WIFI
+#define WFC_SSID "IFPI"
+#define WFC_PASS ""
